@@ -1,6 +1,8 @@
 ---
-name: Set-up and use Python Virtual Environment with Poetry
+name: Python - VENV - Poetry
 description: "Set-up and use a Python Virtual Environment with Poetry with a reusable cache."
+icon: code
+color: 'green'
 inputs:
   python-version:
     required: false
