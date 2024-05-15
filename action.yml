@@ -1,0 +1,54 @@
+---
+name: Set-up and use Python Virtual Environment with Poetry
+description: "Set-up and use a Python Virtual Environment with Poetry with a reusable cache."
+inputs:
+  python-version:
+    required: true
+    description: "The version of Python to use."
+  cache-key:
+    required: true
+    description: "They key to use for the caching of the VENV"
+  groups:
+    required: false
+    description: "The groups of dependencies to install as comma seperated list."
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+        update-environment: True
+    - name: Retrieve or create the cache for the workflow
+      id: check-cache
+      uses: actions/cache@v4
+      with:
+        path: .venv
+        key: ${{ inputs.cache-key }}
+    - name: Install poetry
+      if: ${{ steps.check-cache.outputs.cache-hit != 'true' }}
+      uses: abatilo/actions-poetry@v3
+    - name: Configure Poetry
+      if: ${{ steps.check-cache.outputs.cache-hit != 'true' }}
+      shell: bash
+      run: |
+        poetry config virtualenvs.create true --local
+        poetry config virtualenvs.in-project true --local
+    - name: Install dependencies
+      if: ${{ steps.check-cache.outputs.cache-hit != 'true' }}
+      shell: bash
+      run: |
+        poetry install
+    - name: Install group dependencies
+      if: ${{ steps.check-cache.outputs.cache-hit != 'true' && inputs.groups != '' }}
+      shell: bash
+      run: |
+        poetry install --with ${{ inputs.groups }}
+    - name: Activate VENV
+      shell: bash
+      run: |
+        source .venv/bin/activate
+        python --version
+        echo "PATH=$PATH" >> $GITHUB_ENV
+        echo $PATH
