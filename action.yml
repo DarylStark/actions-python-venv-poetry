@@ -6,7 +6,8 @@ inputs:
     required: true
     description: "The version of Python to use."
   cache-key:
-    required: true
+    required: false
+    default: python-venv-poetry-${{ hashFiles('./poetry.lock') }}
     description: "They key to use for the caching of the VENV"
   groups:
     required: false
