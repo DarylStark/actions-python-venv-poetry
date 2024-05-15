@@ -3,7 +3,8 @@ name: Set-up and use Python Virtual Environment with Poetry
 description: "Set-up and use a Python Virtual Environment with Poetry with a reusable cache."
 inputs:
   python-version:
-    required: true
+    required: false
+    default: "3.12"
     description: "The version of Python to use."
   cache-key:
     required: false
